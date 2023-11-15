@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Message App</title>
+    <style>
+        #messageList {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Simple Message App</h1>
+
+    <input type="text" id="messageInput" placeholder="Type a message and press Enter">
+    <div id="messageList"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get input and message list elements
+            var messageInput = document.getElementById("messageInput");
+            var messageList = document.getElementById("messageList");
+
+            // Add event listener for the Enter key
+            messageInput.addEventListener("keyup", function(event) {
+                if (event.key === "Enter") {
+                    // Get the typed message
+                    var message = messageInput.value;
+
+                    // Create a new paragraph element to display the message
+                    var newMessage = document.createElement("p");
+                    newMessage.textContent = message;
+
+                    // Append the message to the message list
+                    messageList.appendChild(newMessage);
+
+                    // Clear the input for the next message
+                    messageInput.value = "";
+                }
+            });
+        });
+    </script>
+	
+	
+	
+	
+	<!-- Add this script before the closing </body> tag in your HTML -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var messageInput = document.getElementById("messageInput");
+        var messageList = document.getElementById("messageList");
+        var gistId = 'your_gist_id'; // Replace with your Gist ID
+
+        function getMessages() {
+            fetch(`https://api.github.com/gists/${gistId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.files && data.files['messages.json']) {
+                        var messages = JSON.parse(data.files['messages.json'].content);
+                        renderMessages(messages);
+                    }
+                });
+        }
+
+        function saveMessage(message) {
+            fetch(`https://api.github.com/gists/${gistId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    files: {
+                        'messages.json': {
+                            content: JSON.stringify([...getMessages(), message]),
+                        },
+                    },
+                }),
+            })
+            .then(() => getMessages()); // Fetch and render messages after saving
+        }
+
+        function renderMessages(messages) {
+            messageList.innerHTML = '';
+            messages.forEach(message => {
+                var newMessage = document.createElement("p");
+                newMessage.textContent = message;
+                messageList.appendChild(newMessage);
+            });
+        }
+
+        messageInput.addEventListener("keyup", function (event) {
+            if (event.key === "Enter") {
+                var message = messageInput.value.trim();
+                if (message !== '') {
+                    saveMessage(message);
+                    messageInput.value = '';
+                }
+            }
+        });
+
+        // Fetch and render messages on page load
+        getMessages();
+    });
+</script>
+
+
+</body>
+</html>
