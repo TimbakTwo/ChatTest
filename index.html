@@ -12,7 +12,7 @@
 </head>
 <body>
 
-    <h1>Simple Message App</h1>
+    <h1>Simple Message App Test</h1>
 
     <input type="text" id="messageInput" placeholder="Type a message and press Enter">
     <div id="messageList"></div>
@@ -51,7 +51,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         var messageInput = document.getElementById("messageInput");
         var messageList = document.getElementById("messageList");
-        var gistId = 'your_gist_id'; // Replace with your Gist ID
+        var gistId = 'bb10250fa5c04a7ccf8f482cd4fd8a77'; // Replace with your Gist ID
 
         function getMessages() {
             fetch(`https://api.github.com/gists/${gistId}`)
